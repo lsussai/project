@@ -5,14 +5,17 @@ import { FindOneOptions, Repository } from "typeorm";
 
 const categoriaRepository = AppDataSource.getRepository(Categoria);
 
-const getCategoria = (): Promise<Categoria[]> => {
-  return categoriaRepository.find({ relations: ["produtos"] });
+const getCategoria = (offset: number, limit: number): Promise<Categoria[]> => {
+  return categoriaRepository.find({
+    skip: offset,
+    take: limit,
+  });
 };
 
 const getCategoriaById = (id: number): Promise<Categoria | null> => {
   const options: FindOneOptions<Categoria> = {
     where: { id: id },
-    relations: ["produtos"],
+   relations: ["produtos"],
   };
 
   return categoriaRepository.findOne(options);
@@ -26,7 +29,7 @@ const postCategoria = (categoria: ICategoria): Promise<Categoria> => {
 const updateCategoria = async (id: number, categoria: ICategoria): Promise<Categoria | null> => {
      const options: FindOneOptions<Categoria> = {
     where: { id: id },
-    relations: ["produtos"],
+   relations: ["produtos"]
   };
   const categoriaExistente = await categoriaRepository.findOne(options);
 

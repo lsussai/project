@@ -1,13 +1,21 @@
-import { Request, Response, Router } from 'express';
+import { Request, Response, Router, query } from 'express';
 import Categoria from '../entities/Categoria';
 import CategoriaRepository from '../repositories/CategoriaRepository';
 import ICategoria from '../interfaces/ICategoria';
 
 const categoriaRouter = Router();
 
-categoriaRouter.get('/', async (_req: Request, res: Response): Promise<Response> => {
-  const categorias = await CategoriaRepository.getCategoria();
-  return res.status(200).json(categorias);
+categoriaRouter.get('/', async (req: Request, res: Response): Promise<Response> => {
+  const { page = '1', limit = '10' } = req.query;
+  const offset = (Number(page) - 1) * Number(limit);
+
+  try {
+    const categorias = await CategoriaRepository.getCategoria(offset, Number(limit));
+    return res.status(200).json(categorias);
+  } catch (error) {
+    
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 categoriaRouter.get('/:id', async (req: Request, res: Response): Promise<Response> => {
