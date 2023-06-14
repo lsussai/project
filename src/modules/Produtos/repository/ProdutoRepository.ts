@@ -5,10 +5,11 @@ import { FindOneOptions } from "typeorm";
 
 const produtoRepository = AppDataSource.getRepository(Produto);
 
-const getProduto = (): Promise<Produto[]> => {
+const getProdutos = (): Promise<Produto[]> => {
   return produtoRepository.find({ relations: ["categoria"] });
-}
-const getProdutoById = (id: number): Promise<IProduto | null> => {
+};
+
+const getProdutoById = (id: number): Promise<Produto | null> => {
   const options: FindOneOptions<Produto> = {
     where: { id: id },
     relations: ["categoria"],
@@ -17,11 +18,11 @@ const getProdutoById = (id: number): Promise<IProduto | null> => {
   return produtoRepository.findOne(options);
 };
 
-const postProduto = (produto: IProduto): Promise<IProduto> => {
+const postProduto = (produto: IProduto): Promise<Produto> => {
   return produtoRepository.save(produto);
 };
 
-const updateProduto = async (id: number, produto: IProduto): Promise<IProduto | null> => {
+const updateProduto = async (id: number, produto: IProduto): Promise<Produto | null> => {
   const options: FindOneOptions<Produto> = {
     where: { id: id },
     relations: ["categoria"],
@@ -36,7 +37,7 @@ const updateProduto = async (id: number, produto: IProduto): Promise<IProduto | 
   return null;
 };
 
-const deletarProduto = async (id: number): Promise<IProduto | null> => {
+const deletarProduto = async (id: number): Promise<Produto | null> => {
   const options: FindOneOptions<Produto> = {
     where: { id: id },
     relations: ["categoria"],
@@ -51,4 +52,4 @@ const deletarProduto = async (id: number): Promise<IProduto | null> => {
   return null;
 };
 
-export default { getProduto, getProdutoById, postProduto, deletarProduto, updateProduto };
+export default { getProdutos, getProdutoById, postProduto, deletarProduto, updateProduto };

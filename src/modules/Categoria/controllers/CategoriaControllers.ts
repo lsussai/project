@@ -24,7 +24,6 @@ categoriaRouter.post('/', async (req: Request, res: Response): Promise<Response>
   const { nome } = req.body;
   const categoria: ICategoria = {
     nome,
-    criadoEm: new Date(),
   };
 
   const categoriaNova = await CategoriaRepository.postCategoria(categoria);
@@ -36,7 +35,6 @@ categoriaRouter.put('/:id', async (req: Request, res: Response): Promise<Respons
   const { nome } = req.body;
   const categoria: ICategoria = {
     nome,
-    atualizadoEm: new Date(),
   };
 
   const categoriaAtualizada = await CategoriaRepository.updateCategoria(id, categoria);

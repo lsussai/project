@@ -5,11 +5,11 @@ import { FindOneOptions, Repository } from "typeorm";
 
 const categoriaRepository = AppDataSource.getRepository(Categoria);
 
-const getCategoria = (): Promise<ICategoria[]> => {
+const getCategoria = (): Promise<Categoria[]> => {
   return categoriaRepository.find({ relations: ["produtos"] });
 };
 
-const getCategoriaById = (id: number): Promise<ICategoria | null> => {
+const getCategoriaById = (id: number): Promise<Categoria | null> => {
   const options: FindOneOptions<Categoria> = {
     where: { id: id },
     relations: ["produtos"],
@@ -18,11 +18,12 @@ const getCategoriaById = (id: number): Promise<ICategoria | null> => {
   return categoriaRepository.findOne(options);
 };
 
-const postCategoria = (categoria: ICategoria): Promise<ICategoria> => {
+const postCategoria = (categoria: ICategoria): Promise<Categoria> => {
   return categoriaRepository.save(categoria);
 };
 
-const updateCategoria = async (id: number, categoria: ICategoria): Promise<ICategoria | null> => {
+
+const updateCategoria = async (id: number, categoria: ICategoria): Promise<Categoria | null> => {
      const options: FindOneOptions<Categoria> = {
     where: { id: id },
     relations: ["produtos"],
@@ -37,7 +38,7 @@ const updateCategoria = async (id: number, categoria: ICategoria): Promise<ICate
   return null;
 };
 
-const deletarCategoria = async (id: number): Promise<ICategoria | null> => {
+const deletarCategoria = async (id: number): Promise<Categoria | null> => {
      const options: FindOneOptions<Categoria> = {
     where: { id: id },
     relations: ["produtos"],
