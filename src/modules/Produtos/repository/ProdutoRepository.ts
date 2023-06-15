@@ -5,14 +5,17 @@ import { FindOneOptions } from "typeorm";
 
 const produtoRepository = AppDataSource.getRepository(Produto);
 
-const getProdutos = (): Promise<Produto[]> => {
-  return produtoRepository.find({ relations: ["categoria"] });
+const getProdutos = (offset: number, limit: number): Promise<Produto[]> => {
+  return produtoRepository.find({
+    skip: offset,
+    take: limit,
+  });
 };
 
 const getProdutoById = (id: number): Promise<Produto | null> => {
   const options: FindOneOptions<Produto> = {
     where: { id: id },
-    relations: ["categoria"],
+  
   };
 
   return produtoRepository.findOne(options);
@@ -25,7 +28,7 @@ const postProduto = (produto: IProduto): Promise<Produto> => {
 const updateProduto = async (id: number, produto: IProduto): Promise<Produto | null> => {
   const options: FindOneOptions<Produto> = {
     where: { id: id },
-    relations: ["categoria"],
+    
   };
   const produtoExistente = await produtoRepository.findOne(options);
 
@@ -40,10 +43,10 @@ const updateProduto = async (id: number, produto: IProduto): Promise<Produto | n
 const deletarProduto = async (id: number): Promise<Produto | null> => {
   const options: FindOneOptions<Produto> = {
     where: { id: id },
-    relations: ["categoria"],
+    
   };
   const produto = await produtoRepository.findOne(options);
-
+ 
   if (produto) {
     await produtoRepository.remove(produto);
     return produto;

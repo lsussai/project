@@ -4,9 +4,17 @@ import IProduto from "../interfaces/IProduto";
 
 const produtoRouter = Router();
 
-produtoRouter.get('/', async (_req: Request, res: Response): Promise<Response> => {
-  const produtos = await ProdutoRepository.getProdutos();
-  return res.status(200).json(produtos);
+produtoRouter.get('/', async (req: Request, res: Response): Promise<Response> => {
+  const { page = '1', limit = '10' } = req.query;
+  const offset = (Number(page) - 1) * Number(limit);
+
+  try {
+    const produto = await ProdutoRepository.getProdutos(offset, Number(limit));
+    return res.status(200).json(produto);
+  } catch (error) {
+    
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 produtoRouter.get('/:id', async (req: Request, res: Response): Promise<Response> => {

@@ -7,9 +7,17 @@ import IUsuario from '../interfaces/IUsuario';
 
 const usuarioRouter = Router();
 
-usuarioRouter.get('/', async (_req: Request, res: Response): Promise<Response> => {
-  const usuarios = await UsuarioRepository.getUsuarios();
-  return res.status(200).json(usuarios);
+usuarioRouter.get('/', async (req: Request, res: Response): Promise<Response> => {
+  const { page = '1', limit = '10' } = req.query;
+  const offset = (Number(page) - 1) * Number(limit);
+
+  try {
+    const pedido = await UsuarioRepository.getUsuarios(offset, Number(limit));
+    return res.status(200).json(pedido);
+  } catch (error) {
+    
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 usuarioRouter.get('/:id', async (req: Request, res: Response): Promise<Response> => {

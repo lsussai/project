@@ -15,7 +15,7 @@ const getCategoria = (offset: number, limit: number): Promise<Categoria[]> => {
 const getCategoriaById = (id: number): Promise<Categoria | null> => {
   const options: FindOneOptions<Categoria> = {
     where: { id: id },
-   relations: ["produtos"],
+
   };
 
   return categoriaRepository.findOne(options);
@@ -29,7 +29,7 @@ const postCategoria = (categoria: ICategoria): Promise<Categoria> => {
 const updateCategoria = async (id: number, categoria: ICategoria): Promise<Categoria | null> => {
      const options: FindOneOptions<Categoria> = {
     where: { id: id },
-   relations: ["produtos"]
+ 
   };
   const categoriaExistente = await categoriaRepository.findOne(options);
 

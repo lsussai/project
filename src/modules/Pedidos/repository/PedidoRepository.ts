@@ -5,14 +5,17 @@ import IPedido from "../interfaces/IPedido";
 
 const pedidoRepository = AppDataSource.getRepository(Pedido);
 
-const getPedidos = (): Promise<Pedido[]> => {
-  return pedidoRepository.find({ relations: ["usuario", "produto"] });
+const getPedidos = (offset: number, limit: number): Promise<Pedido[]> => {
+  return pedidoRepository.find({
+    skip: offset,
+    take: limit,
+  });
 };
 
 const getPedidoById = (id: number): Promise<Pedido | null> => {
   const options: FindOneOptions<Pedido> = {
     where: { id: id },
-    relations: ["usuario", "produto"],
+   
   };
 
   return pedidoRepository.findOne(options);
@@ -25,7 +28,6 @@ const postPedido = (pedido: IPedido): Promise<IPedido> => {
 const updatePedido = async (id: number, pedido: IPedido): Promise<Pedido | null> => {
   const options: FindOneOptions<Pedido> = {
     where: { id: id },
-    relations: ["usuario", "produto"],
   };
   const pedidoExistente = await pedidoRepository.findOne(options);
 

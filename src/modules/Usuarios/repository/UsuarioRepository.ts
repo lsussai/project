@@ -5,8 +5,11 @@ import IUsuario from "../interfaces/IUsuario";
 
 const usuarioRepository = AppDataSource.getRepository(Usuario);
 
-const getUsuarios = (): Promise<Usuario[]> => {
-  return usuarioRepository.find();
+const getUsuarios = (offset: number, limit: number): Promise<Usuario[]> => {
+  return usuarioRepository.find({
+    skip: offset,
+    take: limit,
+  });
 };
 
 const getUsuarioById = (id: number): Promise<Usuario | null> => {
