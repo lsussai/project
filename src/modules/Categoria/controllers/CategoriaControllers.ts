@@ -2,6 +2,7 @@ import { Request, Response, Router, query } from 'express';
 import Categoria from '../entities/Categoria';
 import CategoriaRepository from '../repositories/CategoriaRepository';
 import ICategoria from '../interfaces/ICategoria';
+import Authenticate from '../../../Middleware/Authenticate';
 
 const categoriaRouter = Router();
 
@@ -28,7 +29,7 @@ categoriaRouter.get('/:id', async (req: Request, res: Response): Promise<Respons
   }
 });
 
-categoriaRouter.post('/', async (req: Request, res: Response): Promise<Response> => {
+categoriaRouter.post('/', Authenticate, async (req: Request, res: Response): Promise<Response> => {
   const { nome } = req.body;
   const categoria: ICategoria = {
     nome,
@@ -38,7 +39,7 @@ categoriaRouter.post('/', async (req: Request, res: Response): Promise<Response>
   return res.status(201).json(categoriaNova);
 });
 
-categoriaRouter.put('/:id', async (req: Request, res: Response): Promise<Response> => {
+categoriaRouter.put('/:id', Authenticate, async (req: Request, res: Response): Promise<Response> => {
   const id = parseInt(req.params.id);
   const { nome } = req.body;
   const categoria: ICategoria = {
@@ -53,7 +54,7 @@ categoriaRouter.put('/:id', async (req: Request, res: Response): Promise<Respons
   }
 });
 
-categoriaRouter.delete('/:id', async (req: Request, res: Response): Promise<Response> => {
+categoriaRouter.delete('/:id', Authenticate, async (req: Request, res: Response): Promise<Response> => {
   const id = parseInt(req.params.id);
   const categoriaDeletada = await CategoriaRepository.deletarCategoria(id);
   if (categoriaDeletada) {

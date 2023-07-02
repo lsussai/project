@@ -1,26 +1,24 @@
-import { Request, Response, Router } from 'express';
+import { Request, Response, Router, query } from 'express';
 import UsuarioRepository from '../repository/UsuarioRepository';
 import IUsuario from '../interfaces/IUsuario';
-
-
+import Authenticate from '../../../Middleware/Authenticate';
 
 
 const usuarioRouter = Router();
 
 usuarioRouter.get('/', async (req: Request, res: Response): Promise<Response> => {
-  const { page = '1', limit = '10' } = req.query;
-  const offset = (Number(page) - 1) * Number(limit);
-
   try {
-    const pedido = await UsuarioRepository.getUsuarios(offset, Number(limit));
-    return res.status(200).json(pedido);
+    const { pagina = 1, limite = 6} = req.query;
+
+    const usuario = await UsuarioRepository.getUsuarios(Number(pagina), Number(limite));
+    return res.status(200).json(usuario);
   } catch (error) {
-    
-    return res.status(500).json({ error: 'Internal Server Error' });
+    console.error(error);
+    return res.status(500).json({error: 'Internal Server Error'});
   }
 });
 
-usuarioRouter.get('/:id', async (req: Request, res: Response): Promise<Response> => {
+usuarioRouter.get('/:id', Authenticate, async (req: Request, res: Response): Promise<Response> => {
   const id = parseInt(req.params.id);
   const usuario = await UsuarioRepository.getUsuarioById(id);
   if (usuario) {
@@ -43,7 +41,7 @@ usuarioRouter.post('/', async (req: Request, res: Response): Promise<Response> =
   return res.status(201).json(usuarioNovo);
 });
 
-usuarioRouter.put('/:id', async (req: Request, res: Response): Promise<Response> => {
+usuarioRouter.put('/:id', Authenticate, async (req: Request, res: Response): Promise<Response> => {
   const id = parseInt(req.params.id);
   const { nome, email, senha, isAdmin } = req.body;
   const usuario: IUsuario = {
@@ -61,7 +59,7 @@ usuarioRouter.put('/:id', async (req: Request, res: Response): Promise<Response>
   }
 });
 
-usuarioRouter.delete('/:id', async (req: Request, res: Response): Promise<Response> => {
+usuarioRouter.delete('/:id', Authenticate, async (req: Request, res: Response): Promise<Response> => {
   const id = parseInt(req.params.id);
   const usuarioDeletado = await UsuarioRepository.deletarUsuario(id);
   if (usuarioDeletado) {
