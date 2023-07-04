@@ -5,11 +5,13 @@ import { FindOneOptions } from "typeorm";
 
 const produtoRepository = AppDataSource.getRepository(Produto);
 
-const getProdutos = (offset: number, limit: number): Promise<Produto[]> => {
-  return produtoRepository.find({
+const getProduto = async (pagina: number, limite: number): Promise<Produto[]> => {
+  const offset = (pagina - 1) * limite;
+  const [result, count] = await produtoRepository.findAndCount({
     skip: offset,
-    take: limit,
+    take: limite,
   });
+  return result;
 };
 
 const getProdutoById = (id: number): Promise<Produto | null> => {
@@ -55,4 +57,4 @@ const deletarProduto = async (id: number): Promise<Produto | null> => {
   return null;
 };
 
-export default { getProdutos, getProdutoById, postProduto, deletarProduto, updateProduto };
+export default { getProduto, getProdutoById, postProduto, deletarProduto, updateProduto };

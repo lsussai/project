@@ -5,12 +5,15 @@ import IPedido from "../interfaces/IPedido";
 
 const pedidoRepository = AppDataSource.getRepository(Pedido);
 
-const getPedidos = (offset: number, limit: number): Promise<Pedido[]> => {
-  return pedidoRepository.find({
+const getPedidos = async (pagina: number, limite: number): Promise<Pedido[]> => {
+  const offset = (pagina - 1) * limite;
+  const [result, count] = await pedidoRepository.findAndCount({
     skip: offset,
-    take: limit,
+    take: limite,
   });
+  return result;
 };
+
 
 const getPedidoById = (id: number): Promise<Pedido | null> => {
   const options: FindOneOptions<Pedido> = {

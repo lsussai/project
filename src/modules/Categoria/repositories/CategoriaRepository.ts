@@ -5,12 +5,15 @@ import { FindOneOptions, Repository } from "typeorm";
 
 const categoriaRepository = AppDataSource.getRepository(Categoria);
 
-const getCategoria = (offset: number, limit: number): Promise<Categoria[]> => {
-  return categoriaRepository.find({
+const getCategoria = async (pagina: number, limite: number): Promise<Categoria[]> => {
+  const offset = (pagina - 1) * limite;
+  const [result, count] = await categoriaRepository.findAndCount({
     skip: offset,
-    take: limit,
+    take: limite,
   });
+  return result;
 };
+
 
 const getCategoriaById = (id: number): Promise<Categoria | null> => {
   const options: FindOneOptions<Categoria> = {
