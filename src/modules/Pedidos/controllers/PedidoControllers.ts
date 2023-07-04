@@ -1,23 +1,24 @@
 import { Request, Response, Router } from 'express';
 import IPedido from '../interfaces/IPedido';
 import PedidoRepository from '../repository/PedidoRepository';
+import Authenticate from '../../../middleware/Authenticate';
 
 const pedidoRouter = Router();
 
 pedidoRouter.get('/', async (req: Request, res: Response): Promise<Response> => {
-  const { page = '1', limit = '10' } = req.query;
-  const offset = (Number(page) - 1) * Number(limit);
-
   try {
-    const pedido = await PedidoRepository.getPedidos(offset, Number(limit));
+    const { pagina = 1, limite = 10 } = req.query;
+
+    const pedido = await PedidoRepository.getPedidos(Number(pagina), Number(limite));
+
     return res.status(200).json(pedido);
   } catch (error) {
-    
+    console.error(error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-pedidoRouter.get('/:id', async (req: Request, res: Response): Promise<Response> => {
+pedidoRouter.get('/:id',Authenticate, async (req: Request, res: Response): Promise<Response> => {
   const id = parseInt(req.params.id);
   const pedido = await PedidoRepository.getPedidoById(id);
   if (pedido) {
@@ -27,7 +28,7 @@ pedidoRouter.get('/:id', async (req: Request, res: Response): Promise<Response> 
   }
 });
 
-pedidoRouter.post('/', async (req: Request, res: Response): Promise<Response> => {
+pedidoRouter.post('/',Authenticate, async (req: Request, res: Response): Promise<Response> => {
   const { usuarioId, produtoId, quantidade } = req.body;
   const pedido: IPedido = {
     usuarioId,
@@ -39,7 +40,7 @@ pedidoRouter.post('/', async (req: Request, res: Response): Promise<Response> =>
   return res.status(201).json(pedidoNovo);
 });
 
-pedidoRouter.put('/:id', async (req: Request, res: Response): Promise<Response> => {
+pedidoRouter.put('/:id',Authenticate, async (req: Request, res: Response): Promise<Response> => {
   const id = parseInt(req.params.id);
   const { usuarioId, produtoId, quantidade } = req.body;
   const pedido: IPedido = {
@@ -56,7 +57,7 @@ pedidoRouter.put('/:id', async (req: Request, res: Response): Promise<Response> 
   }
 });
 
-pedidoRouter.delete('/:id', async (req: Request, res: Response): Promise<Response> => {
+pedidoRouter.delete('/:id',Authenticate, async (req: Request, res: Response): Promise<Response> => {
   const id = parseInt(req.params.id);
   const pedidoDeletado = await PedidoRepository.deletarPedido(id);
 

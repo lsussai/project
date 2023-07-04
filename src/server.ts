@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import "dotenv/config";
 import express from 'express';
 import cors from 'cors';
 import { AppDataSource } from './database/data-source';
@@ -19,7 +20,7 @@ app.use(routers);
 
 AppDataSource.initialize().then(async () => {
     console.log("Database OK !");
-    app.listen(3333, () => {
-        console.log("Server started on port 3333");
+    app.listen(Number(process.env.PORT), () => {
+        console.log(`Server started on port ${process.env.PORT}`);
     })
 })

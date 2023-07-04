@@ -5,16 +5,26 @@ import IUsuario from "../interfaces/IUsuario";
 
 const usuarioRepository = AppDataSource.getRepository(Usuario);
 
-const getUsuarios = (offset: number, limit: number): Promise<Usuario[]> => {
-  return usuarioRepository.find({
+const getUsuarios = async (pagina: number, limite: number): Promise<Usuario[]> => {
+  const offset = (pagina - 1) * limite;
+  const [result, count] = await usuarioRepository.findAndCount({
     skip: offset,
-    take: limit,
+    take: limite,
   });
+  return result;
 };
 
 const getUsuarioById = (id: number): Promise<Usuario | null> => {
   const options: FindOneOptions<Usuario> = {
     where: { id: id },
+  };
+
+  return usuarioRepository.findOne(options);
+  
+};
+const getUsuarioByParams = (email: string, senha:string): Promise<Usuario | null> => {
+  const options: FindOneOptions<Usuario> = {
+    where: { email:email, senha : senha },
   };
 
   return usuarioRepository.findOne(options);
@@ -52,4 +62,4 @@ const deletarUsuario = async (id: number): Promise<Usuario | null> => {
   return null;
 };
 
-export default { getUsuarios, getUsuarioById, postUsuario, deletarUsuario, updateUsuario };
+export default { getUsuarios, getUsuarioById, postUsuario, deletarUsuario, updateUsuario,getUsuarioByParams};

@@ -1,8 +1,8 @@
 interface IUsuario {
     id?: number;
-    nome: string;
+    nome?: string;
     email: string;
     senha: string;
-    isAdmin: boolean;
+    isAdmin?: boolean;
 }
 export default IUsuario;
